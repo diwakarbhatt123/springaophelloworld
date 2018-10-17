@@ -1,5 +1,11 @@
 package com.mkyong.web.controller;
 
+import com.freecharge.fctoken.annotation.Tokenizer;
+import com.freecharge.fctoken.context.AuthorizationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,9 +16,16 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HelloController {
 
+	private Logger logger = LoggerFactory.getLogger(HelloController.class);
+
+	@Autowired
+	@Qualifier("TokenizerAuthorizationContext")
+	private AuthorizationContext authorizationContext;
+
+	@Tokenizer(validateCSRF = false)
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String printWelcome(ModelMap model) {
-
+		logger.debug("COntext is {}",authorizationContext.toString());
 		model.addAttribute("message", "Spring 3 MVC Hello World");
 		return "hello";
 
